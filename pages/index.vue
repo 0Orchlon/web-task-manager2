@@ -47,6 +47,13 @@ const loginWithFacebook = async () => {
     errorMessage.value = error.message;
   }
 };
+const register = async () =>{
+  try {
+    router.push("/register");
+  } catch (error) {
+    errorMessage.value = error.message;
+  }
+}
 </script>
 
 <template>
@@ -58,6 +65,6 @@ const loginWithFacebook = async () => {
     <button @click="loginWithGoogle">Login with Google</button>
     <button @click="loginWithFacebook">Login with Facebook</button>
     <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
-    <p>Don't have an account? <router-link to="/register">Register</router-link></p>
+    <p>Don't have an account? <button @click="register">Register</button></p>
   </div>
 </template>

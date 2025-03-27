@@ -2,9 +2,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useNuxtApp } from "#app";
-definePageMeta({
-  middleware: "auth",
-});
 const router = useRouter();
 const { $auth, $createUserWithEmailAndPassword } = useNuxtApp();
 
