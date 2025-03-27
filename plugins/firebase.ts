@@ -1,7 +1,10 @@
 // plugins/firebase.ts
 import { defineNuxtPlugin } from "#app";
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
+
+
 
 // Firebase configuration
 const firebaseConfig = {
@@ -20,13 +23,24 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
+const db = getFirestore(app);
 
 export default defineNuxtPlugin(() => {
   return {
+    
     provide: {
       auth,
       googleProvider,
       facebookProvider,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      db,
+      collection,
+      addDoc,
+      getDocs,
+      deleteDoc,
+      doc,
     },
   };
 });
