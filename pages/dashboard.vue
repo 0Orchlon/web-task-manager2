@@ -32,20 +32,7 @@ const logout = async () => {
   <div v-if="user">
     <h1>Welcome, {{ user.email }}</h1>
     <button @click="logout">Logout</button>
-
-    <!-- Page Switch Buttons -->
     <div>
-      <button @click="currentPage = 'dashboard'">Dashboard</button>
-      <button @click="currentPage = 'tasks'">Tasks</button>
-    </div>
-
-    <!-- Page Content -->
-    <div v-if="currentPage === 'dashboard'">
-      <h2>Dashboard Content</h2>
-      <p>This is your main dashboard.</p>
-    </div>
-
-    <div v-if="currentPage === 'tasks'">
       <TaskManager />
     </div>
   </div>

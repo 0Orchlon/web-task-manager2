@@ -17,7 +17,7 @@ const loginWithEmail = async () => {
     await $signInWithEmailAndPassword($auth, email.value, password.value);
     router.push("/dashboard");
   } catch (error) {
-    errorMessage.value = error.message;
+    errorMessage.value=error.message=("email or password wrong!");
   }
 };
 
@@ -26,7 +26,7 @@ const loginWithGoogle = async () => {
     await signInWithPopup($auth, $googleProvider);
     router.push("/dashboard");
   } catch (error) {
-    errorMessage.value = error.message;
+    errorMessage.value = error.message=("Google login failed");
   }
 };
 onMounted(() => {
@@ -44,7 +44,7 @@ const loginWithFacebook = async () => {
     await signInWithPopup($auth, $facebookProvider);
     router.push("/dashboard");
   } catch (error) {
-    errorMessage.value = error.message;
+    errorMessage.value = error.message=("facebook login failed");
   }
 };
 const register = async () =>{
@@ -67,4 +67,23 @@ const register = async () =>{
     <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
     <p>Don't have an account? <button @click="register">Register</button></p>
   </div>
+  
 </template>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1791300894995970',
+      xfbml      : true,
+      version    : 'v22.0'
+    });
+    FB.AppEvents.logPageView();
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>

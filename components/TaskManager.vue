@@ -18,6 +18,9 @@ const user = ref(null);
 const tasks = ref([]); // List of tasks
 const sortBy = ref("dueDate"); // Default sorting option
 
+// Task for editing
+const editingTask = ref(null); // Task being edited
+
 // Function to calculate days left
 const daysLeft = (dueDate) => {
   const today = new Date();
@@ -64,6 +67,36 @@ const addTask = async () => {
     newTask.value = { title: "", description: "", dueDate: "", priority: 2 };
   } catch (error) {
     console.error("Error adding task:", error);
+  }
+};
+
+// Edit task
+const editTask = (task) => {
+  editingTask.value = { ...task }; // Set the task being edited
+  window.scrollTo(0, 0);
+
+};
+
+// Save edited task
+const saveEditedTask = async () => {
+  try {
+    const taskRef = $doc($db, "tasks", editingTask.value.id);
+    await updateDoc(taskRef, {
+      title: editingTask.value.title,
+      description: editingTask.value.description,
+      dueDate: editingTask.value.dueDate,
+      priority: editingTask.value.priority,
+    });
+
+    // Update the task in the local list
+    const index = tasks.value.findIndex((task) => task.id === editingTask.value.id);
+    if (index !== -1) {
+      tasks.value[index] = editingTask.value;
+    }
+
+    editingTask.value = null; // Clear the editing state
+  } catch (error) {
+    console.error("Error updating task:", error);
   }
 };
 
@@ -137,26 +170,65 @@ onMounted(() => {
     <div>
       <label for="sort">Sort By:</label>
       <select v-model="sortBy" @change="fetchTasks">
-        <option value="dueDate">Due Date</option>
-        <option value="dueDated">Due Dated</option>
-        <option value="status">Completion Status</option>
-        <option value="statusd">Completion Statusd</option>
-        <option value="priority">Priority</option>
-        <option value="priorityd">Priorityd</option>
+        <option value="dueDate">Due Date ↑</option>
+        <option value="dueDated">Due Date ↓</option>
+        <option value="status">Pending Status ↑</option>
+        <option value="statusd">Completed Status</option>
+        <option value="priority">Priority ↓</option>
+        <option value="priorityd">Priority ↑</option>
       </select>
     </div>
-
+    <div v-if="editingTask" class="edit-task-form">
+      <h3>Edit Task</h3>
+      <form @submit.prevent="saveEditedTask">
+        <input v-model="editingTask.title" placeholder="Task Title" required />
+        <textarea v-model="editingTask.description" placeholder="Task Description" required></textarea>
+        <input type="date" v-model="editingTask.dueDate" required />
+        <select v-model="editingTask.priority">
+          <option value="1">Low</option>
+          <option value="2">Medium</option>
+          <option value="3">High</option>
+        </select>
+        <button type="submit">Save Changes</button>
+        <button type="button" @click="editingTask = null">Cancel</button>
+      </form>
+    </div>
     <!-- Task List -->
-    <ul>
-      <li v-for="task in sortedTasks" :key="task.id">
-        <strong>{{ task.title }}</strong> - 
-        <span>{{ daysLeft(task.dueDate) }} days left</span> - 
-        <span>{{ priorityLabel(task.priority) }}</span> - 
-        <span :class="{ completed: task.completed }">{{ task.completed ? "Completed" : "Pending" }}</span>
-        <button @click="toggleCompletion(task)">Toggle Completion</button>
-        <button @click="deleteTask(task.id)">Delete</button>
-      </li>
-    </ul>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Due Date</th>
+          <th>Days Left</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="task in sortedTasks" :key="task.id">
+          <td>{{ task.title }}</td>
+          <td>
+            <textarea rows="3" readonly style="resize: none; width: 100%;">{{ task.description }}</textarea> 
+          </td>
+          <td>{{ task.dueDate }}</td>
+          <td>{{ daysLeft(task.dueDate) }} days left</td>
+          <td>{{ priorityLabel(task.priority) }}</td>
+          <td :class="{ completed: task.completed }">
+            {{ task.completed ? "Completed" : "Pending" }}
+          </td>
+          <td>
+            <button @click="toggleCompletion(task)">Toggle Completion</button>
+            <button @click="deleteTask(task.id)">Delete</button>
+            <button @click="editTask(task)">Edit</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Edit Task Form (Appears when a task is being edited) -->
+   
   </div>
 </template>
 
@@ -169,5 +241,27 @@ button {
   margin-left: 5px;
   padding: 5px;
   cursor: pointer;
+}
+table, th, td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+.edit-task-form {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.edit-task-form input,
+.edit-task-form textarea {
+  width: 100%;
+  margin-bottom: 10px;
 }
 </style>

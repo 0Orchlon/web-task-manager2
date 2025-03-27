@@ -14,7 +14,8 @@ const register = async () => {
     await $createUserWithEmailAndPassword($auth, email.value, password.value);
     router.push("/dashboard");
   } catch (error) {
-    errorMessage.value = error.message;
+    errorMessage.value = error.message=("Account already in use");
+
   }
 };
 </script>
