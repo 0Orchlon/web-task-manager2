@@ -58,32 +58,23 @@ const register = async () =>{
 
 <template>
   <div>
+    <nav>
+      <router-link to="/tos">Terms of Service</router-link>
+      <br> </br>
+      <router-link to="/privacypolicy">Privacy Policy</router-link>
+    </nav>
     <h1>Login</h1>
     <input v-model="email" type="email" placeholder="Email" />
     <input v-model="password" type="password" placeholder="Password" />
     <button @click="loginWithEmail">Login with Email</button>
     <button @click="loginWithGoogle">Login with Google</button>
     <button @click="loginWithFacebook">Login with Facebook</button>
+    <fb:login-button 
+  scope="public_profile,email"
+  onlogin="checkLoginState();">
+</fb:login-button>
     <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
     <p>Don't have an account? <button @click="register">Register</button></p>
   </div>
   
 </template>
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '1791300894995970',
-      xfbml      : true,
-      version    : 'v22.0'
-    });
-    FB.AppEvents.logPageView();
-  };
-
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "https://connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-</script> -->
