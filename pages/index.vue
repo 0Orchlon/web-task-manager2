@@ -26,7 +26,7 @@ const loginWithGoogle = async () => {
     await signInWithPopup($auth, $googleProvider);
     router.push("/dashboard");
   } catch (error) {
-    errorMessage.value = error.message=("Google login failed");
+    errorMessage.value = error.message;
   }
 };
 onMounted(() => {
@@ -44,7 +44,7 @@ const loginWithFacebook = async () => {
     await signInWithPopup($auth, $facebookProvider);
     router.push("/dashboard");
   } catch (error) {
-    errorMessage.value = error.message=("facebook login failed");
+    errorMessage.value = error.message;
   }
 };
 const register = async () =>{
